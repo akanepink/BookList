@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -22,6 +23,9 @@ import java.util.List;
 
 public class BookListMainActivity extends AppCompatActivity {
 
+    public static final int CONTEXT_MENU_DELETE = 1;
+    public static final int CONTEXT_MENU_ADDNEW = CONTEXT_MENU_DELETE+1;
+    public static final int CONTEXT_MENU_ABOUT = CONTEXT_MENU_ADDNEW+1;
     private ListView listViewBooks;
     private List<Book> listBooks=new ArrayList<>();
     BookAdapter bookAdapter;
@@ -41,25 +45,46 @@ public class BookListMainActivity extends AppCompatActivity {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        //设置标题
-        menu.setHeaderTitle(listBooks.get(info.position).getTitle());
-        //设置内容 参数1为分组，参数2对应条目的id，参数3是指排列顺序，默认排列即可
-        menu.add(0, 1, 0, "删除");
-        menu.add(0, 2, 0, "添加");
-        menu.add(0, 3, 0, "关于...");
+        if(v==listViewBooks) {
+            super.onCreateContextMenu(menu, v, menuInfo);
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+            //设置标题
+            menu.setHeaderTitle(listBooks.get(info.position).getTitle());
+            //设置内容 参数1为分组，参数2对应条目的id，参数3是指排列顺序，默认排列即可
+            menu.add(0, CONTEXT_MENU_DELETE, 0, "删除");
+            menu.add(0, CONTEXT_MENU_ADDNEW, 0, "添加");
+            menu.add(0, CONTEXT_MENU_ABOUT, 0, "关于...");
+        }
     }
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case 1:
-                Toast.makeText(BookListMainActivity.this,"删除成功",Toast.LENGTH_LONG).show();
+            case CONTEXT_MENU_DELETE:
+                final int deletePosition=((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).position;
+                new android.app.AlertDialog.Builder(this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("询问")
+                        .setMessage("你确定要删除这条吗？")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                listBooks.remove(deletePosition);
+                                bookAdapter.notifyDataSetChanged();
+                                Toast.makeText(BookListMainActivity.this,"删除成功",Toast.LENGTH_LONG).show();
+                            }})
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                            }})
+                        .create().show();
                 break;
-            case 2:
+            case CONTEXT_MENU_ADDNEW:
+                final int insertPosition=((AdapterView.AdapterContextMenuInfo) item.getMenuInfo()).position;
+                listBooks.add(insertPosition,new Book("无名书籍",R.drawable.book_no_name));
+                bookAdapter.notifyDataSetChanged();
                 break;
-            case 3:
+            case CONTEXT_MENU_ABOUT:
                 Toast.makeText(BookListMainActivity.this,"关于",Toast.LENGTH_LONG).show();
                 break;
         }
