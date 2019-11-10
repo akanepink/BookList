@@ -38,6 +38,12 @@ public class NewBookActivity extends AppCompatActivity {
                 NewBookActivity.this.finish();
             }
         });
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NewBookActivity.this.finish();
+            }
+        });
 
     }
 }
