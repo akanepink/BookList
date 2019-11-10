@@ -1,4 +1,4 @@
-package com.example.booklist;
+package com.example.booklist.data.model;
 
 import java.io.Serializable;
 

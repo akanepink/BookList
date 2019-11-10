@@ -3,6 +3,8 @@ package com.example.booklist;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,6 +22,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.booklist.data.BookFragmentAdapter;
+import com.example.booklist.data.BookListFragment;
+import com.example.booklist.data.model.Book;
+import com.example.booklist.data.BookSaver;
+import com.google.android.material.tabs.TabLayout;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +40,6 @@ public class BookListMainActivity extends AppCompatActivity {
     public static final int REQUEST_CODE_NEW_BOOK = 901;
     public static final int REQUEST_CODE_UPDATE_BOOK =902;
 
-    private ListView listViewBooks;
     private List<Book> listBooks=new ArrayList<>();
     private BookSaver bookSaver;
     BookAdapter bookAdapter;
@@ -52,16 +59,27 @@ public class BookListMainActivity extends AppCompatActivity {
         listBooks=bookSaver.load();
         if(listBooks.size()==0)
             init();
-        listViewBooks=(ListView)this.findViewById(R.id.list_view_books);
+        bookAdapter=new BookListMainActivity.BookAdapter(BookListMainActivity.this,R.layout.list_view_item_book,listBooks);
 
-        bookAdapter=new BookAdapter(BookListMainActivity.this,R.layout.list_view_item_book,listBooks);
-        listViewBooks.setAdapter(bookAdapter);
-        this.registerForContextMenu(listViewBooks);
+        BookFragmentAdapter myPageAdapter=new BookFragmentAdapter(getSupportFragmentManager());
+        ArrayList<Fragment> datas=new ArrayList<Fragment>();
+        datas.add(new BookListFragment(bookAdapter));
+        myPageAdapter.setData(datas);
+
+        ArrayList<String> titles=new ArrayList<String>();
+        titles.add("A");
+        myPageAdapter.setTitles(titles);
+
+        TabLayout tabLayout=findViewById(R.id.tablayout);
+        ViewPager viewPager=findViewById(R.id.viewPager);
+        viewPager.setAdapter(myPageAdapter);
+        tabLayout.setupWithViewPager(viewPager);
+
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if(v==listViewBooks) {
+        if(v==findViewById(R.id.list_view_books)) {
             super.onCreateContextMenu(menu, v, menuInfo);
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             //设置标题
@@ -156,7 +174,7 @@ public class BookListMainActivity extends AppCompatActivity {
         listBooks.add(new Book("信息安全数学基础（第2版）",R.drawable.book_1,30.0));
     }
 
-    class BookAdapter extends ArrayAdapter<Book> {
+    public class BookAdapter extends ArrayAdapter<Book> {
 
         private int resourceId;
 

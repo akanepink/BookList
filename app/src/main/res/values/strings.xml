@@ -2,6 +2,8 @@
     <string name="app_name">BookList</string>
     <string name="ok_cn">确认</string>
     <string name="cancel_cn">取消</string>
-    <string name="book_name_cn" >书名</string>
+    <string name="book_name_cn">书名</string>
     <string name="price_cn">价格</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

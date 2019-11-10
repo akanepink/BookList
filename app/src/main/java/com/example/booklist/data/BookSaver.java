@@ -1,6 +1,8 @@
-package com.example.booklist;
+package com.example.booklist.data;
 
 import android.content.Context;
+
+import com.example.booklist.data.model.Book;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
