@@ -18,12 +18,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.booklist.data.BookFragmentAdapter;
-import com.example.booklist.data.BookListFragment;
 import com.example.booklist.data.model.Book;
 import com.example.booklist.data.BookSaver;
 import com.google.android.material.tabs.TabLayout;
@@ -64,10 +62,14 @@ public class BookListMainActivity extends AppCompatActivity {
         BookFragmentAdapter myPageAdapter=new BookFragmentAdapter(getSupportFragmentManager());
         ArrayList<Fragment> datas=new ArrayList<Fragment>();
         datas.add(new BookListFragment(bookAdapter));
+        datas.add(new WebViewFragment());
+        datas.add(new MapViewFragment());
         myPageAdapter.setData(datas);
 
         ArrayList<String> titles=new ArrayList<String>();
-        titles.add("A");
+        titles.add("图书");
+        titles.add("新闻");
+        titles.add("卖家");
         myPageAdapter.setTitles(titles);
 
         TabLayout tabLayout=findViewById(R.id.tablayout);
